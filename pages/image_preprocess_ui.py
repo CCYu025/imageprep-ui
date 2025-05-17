@@ -39,11 +39,14 @@ def show():
         buffer_for_pil = io.BytesIO(uploaded_bytes)
         buffer_for_api = io.BytesIO(uploaded_bytes)
 
-        # ✅ 先嘗試解析圖片，失敗就中斷流程
+        # 嘗試解析圖片
         try:
-            original_img = Image.open(buffer_for_pil) 
-        except UnidentifiedImageError:
-            st.error("上傳的圖片無法解析，請使用標準 JPG/PNG 格式")
+            original_img = Image.open(buffer_for_pil)
+            original_img.verify()  # 檢查格式合法
+            buffer_for_pil.seek(0)
+            original_img = Image.open(buffer_for_pil)  # 再開一次做解析
+        except Exception as e:
+            st.error(f"圖片讀取失敗，請使用標準 JPG/PNG。錯誤訊息：{e}")
             return
 
         # ✅ 儲存合法圖片到 session
