@@ -42,7 +42,7 @@ def show():
 
             # 呼叫 API（這裡重新用 BytesIO 包裝內容）
             files = {
-                "file": ("uploaded.jpg", io.BytesIO(uploaded_bytes), "image/jpeg")
+                "file": ("uploaded.jpg", io.BytesIO(uploaded_bytes), uploaded_file.type)
             }
             data = {"mode": mode}
 
