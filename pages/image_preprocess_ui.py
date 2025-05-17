@@ -8,6 +8,9 @@ import os
 from datetime import datetime
 from pathlib import Path
 
+def is_valid_image(img):
+    return isinstance(img, Image.Image)
+
 def show():
     if "original_image" not in st.session_state:
         st.session_state["original_image"] = None
@@ -40,7 +43,8 @@ def show():
             st.error(f"請求失敗：{e}")
 
     # ✅ 修正顯示圖片比對條件
-    if "original_image" in st.session_state and st.session_state["original_image"] is not None and "processed_image" in st.session_state and st.session_state["processed_image"] is not None:
+    if ("original_image" in st.session_state and "processed_image" in st.session_state and is_valid_image(st.session_state["original_image"]) and is_valid_image(st.session_state["processed_image"])):
+        
         col1, col2 = st.columns(2)
         with col1:
             st.subheader("原始圖片")
@@ -50,7 +54,7 @@ def show():
             st.image(st.session_state["processed_image"], use_container_width=True)
 
     # 另存圖片按鈕
-    if st.session_state["processed_image"] is not None and st.button("另存圖片到 [下載] 資料夾"):
+    if ("processed_image" in st.session_state and is_valid_image(st.session_state["processed_image"]) and st.button("另存圖片到 [下載] 資料夾")):
         try:
             downloads_dir = str(Path.home() / "Downloads")
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
