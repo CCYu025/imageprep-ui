@@ -33,9 +33,14 @@ def show():
     # 處理圖片
     if uploaded_file and st.button("執行處理"):
 
+        # 🔁 讀取為 bytes 並複製
+        uploaded_bytes = uploaded_file.read()
+        buffer_for_pil = io.BytesIO(uploaded_bytes)
+        buffer_for_api = io.BytesIO(uploaded_bytes)
+
         # ✅ 先嘗試解析圖片，失敗就中斷流程
         try:
-            original_img = Image.open(uploaded_file)
+            original_img = Image.open(buffer_for_pil) 
         except UnidentifiedImageError:
             st.error("上傳的圖片無法解析，請使用標準 JPG/PNG 格式")
             return
@@ -44,7 +49,8 @@ def show():
         st.session_state["original_image"] = original_img
 
         # ✅ 呼叫 API
-        files = {'file': uploaded_file}
+        files = {"file": ("uploaded.jpg", buffer_for_api, uploaded_file.type)} 
+
         data = {'mode': mode}
 
         try:
