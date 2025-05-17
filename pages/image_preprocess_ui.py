@@ -34,16 +34,12 @@ def show():
     # 處理圖片
     if uploaded_file and st.button("執行處理"):
 
-        # 若還沒緩存就讀取
-        if "uploaded_bytes" not in st.session_state:
+        try:
             uploaded_bytes = uploaded_file.read()
             if not uploaded_bytes:
                 st.error("⚠️ 檔案為空，請重新選擇圖片。")
                 return
-            st.session_state["uploaded_bytes"] = uploaded_bytes
-        uploaded_bytes = st.session_state["uploaded_bytes"]
 
-        try:
             buffer_for_pil = io.BytesIO(uploaded_bytes)
             buffer_for_api = io.BytesIO(uploaded_bytes)
 
