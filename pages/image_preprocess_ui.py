@@ -21,11 +21,13 @@ def show():
     st.header("🖼️ 圖像前處理工具")
 
     uploaded_file = st.file_uploader("請上傳圖片", type=["jpg", "jpeg", "png"])
-    mode = st.selectbox("請選擇處理模式", [
-        "grayscale", "resize", "edge",
-        "blur", "sharpen", "rotate", "flip_horizontal", "invert"
-    ],
-    index=0  # 預設為 grayscale，避免為 None
+    mode = st.selectbox(
+        "請選擇處理模式", 
+        options=[
+            "grayscale", "resize", "edge",
+            "blur", "sharpen", "rotate", "flip_horizontal", "invert"
+        ],
+        index=0  # 預設值，防止 mode 是 None
     )
 
     # 處理圖片
