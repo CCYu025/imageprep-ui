@@ -2,7 +2,8 @@
 # pages/image_preprocess_ui.py
 import streamlit as st
 import requests
-from PIL import Image, UnidentifiedImageError
+from PIL import Image
+from PIL import UnidentifiedImageError
 import io
 import os
 from datetime import datetime
