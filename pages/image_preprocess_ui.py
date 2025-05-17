@@ -30,10 +30,10 @@ def show():
         index=0
     )
 
-    if uploaded_file is not None and st.button("執行處理"):
+    if uploaded_file and st.button("執行處理"):
         try:
             # ✅ 一次性讀取檔案內容
-            uploaded_bytes = uploaded_file.getvalue()
+            uploaded_bytes = uploaded_file.read()
             if not uploaded_bytes:
                 st.error("⚠️ 檔案為空，請重新上傳圖片。")
                 return
