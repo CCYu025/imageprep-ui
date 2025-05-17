@@ -24,7 +24,9 @@ def show():
     mode = st.selectbox("請選擇處理模式", [
         "grayscale", "resize", "edge",
         "blur", "sharpen", "rotate", "flip_horizontal", "invert"
-    ])
+    ],
+    index=0  # 預設為 grayscale，避免為 None
+    )
 
     # 處理圖片
     if uploaded_file and st.button("執行處理"):
