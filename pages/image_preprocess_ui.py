@@ -40,9 +40,7 @@ def show():
             st.error(f"請求失敗：{e}")
 
     # ✅ 修正顯示圖片比對條件
-    if (
-        "original_image" in st.session_state and st.session_state["original_image"] is not None and "processed_image" in st.session_state and st.session_state["processed_image"] is not None
-    ):
+    if "original_image" in st.session_state and st.session_state["original_image"] is not None and "processed_image" in st.session_state and st.session_state["processed_image"] is not None:
         col1, col2 = st.columns(2)
         with col1:
             st.subheader("原始圖片")
