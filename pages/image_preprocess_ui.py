@@ -9,6 +9,12 @@ from datetime import datetime
 from pathlib import Path
 
 def show():
+    if "original_image" not in st.session_state:
+        st.session_state["original_image"] = None
+    
+    if "processed_image" not in st.session_state:
+        st.session_state["processed_image"] = None
+
     st.header("🖼️ 圖像前處理工具")
 
     uploaded_file = st.file_uploader("請上傳圖片", type=["jpg", "jpeg", "png"])
