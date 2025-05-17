@@ -41,12 +41,18 @@ def show():
 
         # 嘗試解析圖片
         try:
+            if uploaded_bytes == b'':
+                st.error("上傳的檔案為空，請重新選擇圖片。")
+                return
+
+            buffer_for_pil.seek(0)
             original_img = Image.open(buffer_for_pil)
             original_img.verify()  # 檢查格式合法
-            buffer_for_pil.seek(0)
-            original_img = Image.open(buffer_for_pil)  # 再開一次做解析
+            buffer_for_pil.seek(0)  # reset
+            original_img = Image.open(buffer_for_pil)  # 再讀一次
         except Exception as e:
-            st.error(f"圖片讀取失敗，請使用標準 JPG/PNG。錯誤訊息：{e}")
+            st.error("❌ 圖片解析失敗，請確認為標準 JPG/PNG 格式。")
+            st.exception(e)  # ✅ 顯示完整 exception log
             return
 
         # ✅ 儲存合法圖片到 session
