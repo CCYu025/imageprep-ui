@@ -41,7 +41,6 @@ def show():
                 st.error("⚠️ 檔案為空，請重新選擇圖片。")
                 return
             st.session_state["uploaded_bytes"] = uploaded_bytes
-        
         uploaded_bytes = st.session_state["uploaded_bytes"]
 
         try:
