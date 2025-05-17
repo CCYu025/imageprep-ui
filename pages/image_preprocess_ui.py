@@ -11,7 +11,7 @@ from pathlib import Path
 def show():
     if "original_image" not in st.session_state:
         st.session_state["original_image"] = None
-    
+
     if "processed_image" not in st.session_state:
         st.session_state["processed_image"] = None
 
@@ -29,21 +29,21 @@ def show():
         data = {'mode': mode}
 
         try:
-            #res = requests.post("http://127.0.0.1:5000/process-image", files=files, data=data)
-            res = requests.post("https://imageprep-api.onrender.com/process-image", files=files, data=data)  # ✅ 改為線上 API
+            res = requests.post("https://imageprep-api.onrender.com/process-image", files=files, data=data)
             if res.status_code == 200:
-                # 儲存圖片進 session
                 st.session_state["original_image"] = Image.open(uploaded_file)
                 st.session_state["processed_image"] = Image.open(io.BytesIO(res.content))
                 st.session_state["mode_used"] = mode
-
             else:
                 st.error(f"錯誤：{res.status_code} - {res.text}")
         except Exception as e:
             st.error(f"請求失敗：{e}")
 
-    # 顯示圖片比對（持續存在）
-    if "processed_image" in st.session_state and "original_image" in st.session_state:
+    # ✅ 修正顯示圖片比對條件
+    if (
+        st.session_state["original_image"] is not None and
+        st.session_state["processed_image"] is not None
+    ):
         col1, col2 = st.columns(2)
         with col1:
             st.subheader("原始圖片")
@@ -52,8 +52,8 @@ def show():
             st.subheader("處理後圖片")
             st.image(st.session_state["processed_image"], use_container_width=True)
 
-    # 獨立另存按鈕
-    if "processed_image" in st.session_state and st.button("另存圖片到 [下載] 資料夾"):
+    # 另存圖片按鈕
+    if st.session_state["processed_image"] is not None and st.button("另存圖片到 [下載] 資料夾"):
         try:
             downloads_dir = str(Path.home() / "Downloads")
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -65,3 +65,4 @@ def show():
             st.success(f"圖片已儲存至：{filepath}")
         except Exception as e:
             st.error(f"儲存圖片失敗：{e}")
+
