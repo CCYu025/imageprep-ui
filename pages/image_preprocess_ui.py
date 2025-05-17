@@ -32,27 +32,27 @@ def show():
     )
 
     # 處理圖片
-    if uploaded_file and st.button("執行處理"):
+    if uploaded_file is not None:
+        if st.button("執行處理"):
+            try:
+                uploaded_bytes = uploaded_file.read()
+                if not uploaded_bytes:
+                    st.error("⚠️ 檔案為空，請重新上傳圖片。")
+                    return
 
-        try:
-            uploaded_bytes = uploaded_file.read()
-            if not uploaded_bytes:
-                st.error("⚠️ 檔案為空，請重新選擇圖片。")
+                buffer_for_pil = io.BytesIO(uploaded_bytes)
+                buffer_for_api = io.BytesIO(uploaded_bytes)
+
+                buffer_for_pil.seek(0)
+                original_img = Image.open(buffer_for_pil)
+                original_img.verify()
+                buffer_for_pil.seek(0)
+                original_img = Image.open(buffer_for_pil)
+
+            except Exception as e:
+                st.error("❌ 圖片讀取失敗，請確認圖片格式正確。")
+                st.exception(e)
                 return
-
-            buffer_for_pil = io.BytesIO(uploaded_bytes)
-            buffer_for_api = io.BytesIO(uploaded_bytes)
-
-            buffer_for_pil.seek(0)
-            original_img = Image.open(buffer_for_pil)
-            original_img.verify()
-            buffer_for_pil.seek(0)
-            original_img = Image.open(buffer_for_pil)
-
-        except Exception as e:
-            st.error("❌ 圖片讀取失敗，請確認圖片格式正確。")
-            st.exception(e)
-            return
 
         # ✅ 儲存合法圖片到 session
         st.session_state["original_image"] = original_img
