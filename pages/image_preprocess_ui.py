@@ -33,26 +33,25 @@ def show():
 
     # 處理圖片
     if uploaded_file and st.button("執行處理"):
-
-        # 🔁 讀取為 bytes 並複製
+    
+        # 確保上傳內容不是空的
         uploaded_bytes = uploaded_file.read()
+        if not uploaded_bytes:
+            st.error("⚠️ 檔案為空，請上傳有效圖片。")
+            return
+
         buffer_for_pil = io.BytesIO(uploaded_bytes)
         buffer_for_api = io.BytesIO(uploaded_bytes)
 
-        # 嘗試解析圖片
         try:
-            if uploaded_bytes == b'':
-                st.error("上傳的檔案為空，請重新選擇圖片。")
-                return
-
             buffer_for_pil.seek(0)
             original_img = Image.open(buffer_for_pil)
-            original_img.verify()  # 檢查格式合法
-            buffer_for_pil.seek(0)  # reset
-            original_img = Image.open(buffer_for_pil)  # 再讀一次
+            original_img.verify()
+            buffer_for_pil.seek(0)
+            original_img = Image.open(buffer_for_pil)
         except Exception as e:
-            st.error("❌ 圖片解析失敗，請確認為標準 JPG/PNG 格式。")
-            st.exception(e)  # ✅ 顯示完整 exception log
+            st.error("❌ 圖片讀取失敗，請使用標準 JPG/PNG 格式。")
+            st.exception(e)
             return
 
         # ✅ 儲存合法圖片到 session
