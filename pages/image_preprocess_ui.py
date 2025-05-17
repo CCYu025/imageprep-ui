@@ -2,7 +2,7 @@
 # pages/image_preprocess_ui.py
 import streamlit as st
 import requests
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 import io
 import os
 from datetime import datetime
@@ -28,13 +28,24 @@ def show():
 
     # 處理圖片
     if uploaded_file and st.button("執行處理"):
+
+        # ✅ 先嘗試解析圖片，失敗就中斷流程
+        try:
+            original_img = Image.open(uploaded_file)
+        except UnidentifiedImageError:
+            st.error("上傳的圖片無法解析，請使用標準 JPG/PNG 格式")
+            return
+
+        # ✅ 儲存合法圖片到 session
+        st.session_state["original_image"] = original_img
+
+        # ✅ 呼叫 API
         files = {'file': uploaded_file}
         data = {'mode': mode}
 
         try:
             res = requests.post("https://imageprep-api.onrender.com/process-image", files=files, data=data)
             if res.status_code == 200:
-                st.session_state["original_image"] = Image.open(uploaded_file)
                 st.session_state["processed_image"] = Image.open(io.BytesIO(res.content))
                 st.session_state["mode_used"] = mode
             else:
@@ -42,9 +53,9 @@ def show():
         except Exception as e:
             st.error(f"請求失敗：{e}")
 
+
     # ✅ 修正顯示圖片比對條件
     if ("original_image" in st.session_state and "processed_image" in st.session_state and is_valid_image(st.session_state["original_image"]) and is_valid_image(st.session_state["processed_image"])):
-        
         col1, col2 = st.columns(2)
         with col1:
             st.subheader("原始圖片")
